@@ -1,9 +1,11 @@
 from app import app
-from flask import render_template, flash
+from flask import render_template, flash, redirect
 from app.forms.login_form import LoginForm
 from app.forms.usuario_form import UsuarioForm
 from app.controllers.authenticationController import AuthenticationController
 from app.controllers.usuarioController import UsuarioController
+from models import Usuario, Post
+from app import db
 
 
 @app.route("/")
@@ -64,3 +66,13 @@ def atualizar(id):
 def remover(id):
     UsuarioController.remover_usuario(id)
     return render_template("index.html")
+
+@app.route('/inserir-com-relacionamento', methods=['GET'])
+def inserir_com_relacionamento():
+    # Supondo que existe um usuario com id igual a 1
+    usuario = Usuario.query.get(1)
+
+    novo_post = Post(body="Post de exemplo", author=usuario)
+    db.session.add(novo_post)
+    db.session.commit()
+    return redirect("/")
