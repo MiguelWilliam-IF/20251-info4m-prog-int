@@ -14,6 +14,7 @@
             <a href="{{ url_for('login') }}">Login</a>
             <a href="{{ url_for('cadastrar') }}">Cadastro de Usuário</a>
             <a href="{{ url_for('listar') }}">Listar Usuários</a>
+            <a href="{{ url_for('post') }}">Novo Post</a>
         </div>
     </header>
     {% with messages = get_flashed_messages(with_categories=True) %}

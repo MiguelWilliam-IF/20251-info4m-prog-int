@@ -2,9 +2,11 @@ from app import app
 from flask import render_template, flash, redirect
 from app.forms.login_form import LoginForm
 from app.forms.usuario_form import UsuarioForm
+from app.forms.post_form import PostForm
 from app.controllers.authenticationController import AuthenticationController
 from app.controllers.usuarioController import UsuarioController
-from models import Usuario, Post
+from app.controllers.postController import PostController
+from app.models import Usuario, Post
 from app import db
 
 
@@ -76,3 +78,16 @@ def inserir_com_relacionamento():
     db.session.add(novo_post)
     db.session.commit()
     return redirect("/")
+
+@app.route('/post', methods=['GET', 'POST'])
+def post():
+    formulario = PostForm()
+    if formulario.validate_on_submit():
+        sucesso = PostController.criar(formulario, 2)
+        if sucesso:
+            flash("Post criado com sucesso!", category="success")
+            return render_template("index.html")
+        else:
+            flash("Erro ao criar novo post.", category="error")
+            return render_template("post.html", form = formulario)
+    return render_template('post.html', titulo='Novo Post', form = formulario)
