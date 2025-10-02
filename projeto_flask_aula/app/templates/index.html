@@ -3,14 +3,9 @@
 {% block titulo %}Pagina Inicial{% endblock %}
 
 {% block conteudo %}
-    {% if usuario_logado %}
-    <h1>Bem-vindo(a), {{ usuario.nome }}!</h1>
-    <ul>
-    {% for p in usuario.produtos %}
-    <li>{{ p }}</li>
-    {% endfor %}
-    </ul>
+    {% if current_user.is_authenticated %}
+        <h1>Bem vindo(a), {{ current_user.username }}!</h1>
     {% else %}
-    <h1>Faça o login para continuar.</h1>
+        <h1>Faça login para continuar.</h1>
     {% endif %}
 {% endblock %}

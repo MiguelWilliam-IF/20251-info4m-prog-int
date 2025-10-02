@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, flash, redirect
+from flask import render_template, flash, redirect, url_for, request
 from app.forms.login_form import LoginForm
 from app.forms.usuario_form import UsuarioForm
 from app.forms.post_form import PostForm
@@ -12,7 +12,7 @@ from app import db
 
 @app.route("/")
 def home():
-    return render_template("index.html", usuario = None, usuario_logado = False)
+    return render_template("index.html")
 
 
 @app.route("/sobre")
@@ -24,7 +24,14 @@ def sobre():
 def login():
     formulario = LoginForm()
     if formulario.validate_on_submit():
-        return AuthenticationController.login(formulario)
+        if AuthenticationController.login(formulario):
+            flash("Login realizado com sucesso!", "success")
+            next_page = request.args.get('next')
+            if not next_page:
+                next_page = url_for('home')
+            return redirect(next_page)
+        else:
+            flash("Usuário ou senha inválidos.", "error")
     return render_template('login.html', title='Login', form = formulario)
 
 
@@ -91,3 +98,10 @@ def post():
             flash("Erro ao criar novo post.", category="error")
             return render_template("post.html", form = formulario)
     return render_template('post.html', titulo='Novo Post', form = formulario)
+
+@app.route('/logout')
+def logout():
+    success = AuthenticationController.logout()
+    if not success:
+        flash("Erro ao realizar logout.", "error")
+    return redirect(url_for("home"))

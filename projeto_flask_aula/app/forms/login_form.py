@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, ValidationError
 from wtforms.validators import DataRequired
 
 class LoginForm(FlaskForm):
@@ -8,4 +8,6 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Permanecer conectado')
     submit = SubmitField('Entrar')
 
-    #augusto lindo 
+    def validate_username(self, field):
+        if field.data.lower() == 'admin':
+            raise ValidationError('O nome "admin" está reservado. Escolha outro.')
